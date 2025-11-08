@@ -1,6 +1,7 @@
 import "../styles/Header.css";
 import logo from "../assets/logo.png";
 import profile from "../assets/profile_icon.png";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -12,7 +13,9 @@ export default function Header() {
 
           <a href="/"><img src={logo} className="logo" alt="Logo" /></a>
 
-            <img src={profile} className="profile-icon" />
+          <Link to="/profile">
+            <img src={profile} className="profile-icon" alt="Профиль" />
+          </Link>
         </div>
       </header>
 
