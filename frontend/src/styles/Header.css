@@ -1,0 +1,92 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  border-bottom: 1px solid #d7e9ff;
+  padding: 10px 0;
+}
+
+.header-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.logo {
+  height: 62px;
+  justify-self: center;
+}
+
+/* PROFILE ICON */
+
+
+.profile-icon {
+  justify-self: end;
+  font-size: 32px;
+  cursor: pointer;
+  padding: 6px;
+  transition: 0.2s;
+  width: 62px;
+}
+
+.profile-icon:hover {
+  background-color: #a5d6ffB3;
+  border-radius: 100px;
+}
+
+/* SELL BUTTON DESKTOP */
+.sell-btn {
+  justify-self: start;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+/* MOBILE SELL BUTTON */
+.sell-mobile {
+  display: none;
+}
+
+/* BREAKPOINT */
+@media (max-width: 768px) {
+
+  .sell-btn {
+    display: none;
+  }
+
+  .logo {
+    justify-self: start;
+  }
+
+  /* PROFILE FIXED RIGHT */
+  .profile-icon {
+    position: fixed;
+    right: 15px;
+    top: 14px;
+    z-index: 200;
+    font-size: 32px;
+  }
+
+  /* NICE MOBILE SELL BUTTON */
+  .sell-mobile {
+    display: block;
+    width: 350px;
+    margin: 10px auto;
+    padding: 12px 26px;
+    border-radius: 50px;
+    font-size: 18px;
+  }
+}

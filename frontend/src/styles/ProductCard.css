@@ -1,0 +1,61 @@
+.product-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 15px;
+  text-decoration: none;
+  text-align: center;
+  color: black;
+  position: relative;
+  border: 1px solid #9cc9ff;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+}
+
+.product-title {
+  margin: 10px 0;
+  transition: 0.2s;
+}
+
+.product-card:hover .product-title {
+  color: var(--primary-dark);
+}
+
+/* Heart Button */
+.heart {
+  position: absolute;
+  bottom: 5px;
+  right: 15px;
+  font-size: 30px;
+  cursor: pointer;
+  user-select: none;
+  color: #c3c3c3;
+  transition: 0.2s;
+}
+
+.heart:hover {
+  color: #8bc2ff;
+}
+
+.heart.active {
+  color: var(--primary);
+}
+
+.img-wrap {
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.img-wrap img {
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  object-fit: contain;
+}

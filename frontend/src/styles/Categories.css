@@ -1,0 +1,43 @@
+.categories {
+  margin: 50px auto;
+}
+
+.categories h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--text-dark);
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.category-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  border: 1px solid #d7e9ff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.category-card:hover {
+  border-color: var(--primary);
+  background: #eaf5ff;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
