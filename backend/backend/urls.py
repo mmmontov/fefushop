@@ -9,5 +9,6 @@ urlpatterns = [
     # path('api/v1/drf-auth/', include('rest_framework.urls')),
     path('api/users/', include('users.urls')),
     path('api/items/', include('items.urls')),
+    path('api/', include('favorites.urls')),
     # path('api/items/', include('items.urls')) позже
 ]
