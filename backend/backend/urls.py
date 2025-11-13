@@ -10,5 +10,6 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/items/', include('items.urls')),
     path('api/', include('favorites.urls')),
+    path('api/', include('contacts.urls')),
     # path('api/items/', include('items.urls')) позже
 ]
