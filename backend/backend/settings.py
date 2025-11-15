@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'items',
     'favorites',
     'contacts',
+    'reviews'
 ]
 
 MIDDLEWARE = [
