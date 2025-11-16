@@ -1,0 +1,193 @@
+.my-items-page {
+  background: white;
+  border-radius: 8px;
+  padding: 30px;
+}
+
+.my-items-page h1 {
+  color: #243a4d;
+  margin-bottom: 30px;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eee;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  color: #666;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: 0.2s;
+}
+
+.tab:hover {
+  color: #ff6b35;
+}
+
+.tab.active {
+  color: #ff6b35;
+  border-bottom-color: #ff6b35;
+}
+
+.items-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 20px;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  transition: 0.2s;
+}
+
+.item-row:hover {
+  background: #f9f9f9;
+  border-color: #ddd;
+}
+
+.item-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #f0f0f0;
+  display: block;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.item-image:hover {
+  opacity: 0.8;
+}
+
+.item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-info h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.item-info h3 a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.item-info h3 a:hover {
+  color: #ff6b35;
+  text-decoration: underline;
+}
+
+.item-meta {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  gap: 15px;
+}
+
+.item-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.item-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-edit,
+.btn-delete {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.btn-edit {
+  background: #ff6b35;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #e55a2b;
+}
+
+.btn-delete {
+  background: #ffcdd2;
+  color: #c62828;
+}
+
+.btn-delete:hover {
+  background: #ef9a9a;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.no-items {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 18px;
+}
+
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .my-items-page {
+    padding: 20px;
+  }
+
+  .item-row {
+    grid-template-columns: 60px 1fr;
+    gap: 15px;
+  }
+
+  .item-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .item-actions {
+    grid-column: 1 / -1;
+    flex-direction: column;
+  }
+
+  .btn-edit,
+  .btn-delete {
+    width: 100%;
+  }
+}

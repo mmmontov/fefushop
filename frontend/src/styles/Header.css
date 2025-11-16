@@ -2,58 +2,173 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: white;
-  border-bottom: 1px solid #d7e9ff;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+  border-bottom: 2px solid #bfdbfe;
   padding: 10px 0;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
 }
 
 .header-wrap {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.logo-link {
+  text-decoration: none;
 }
 
 .logo {
-  height: 62px;
-  justify-self: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #2563eb;
+  margin: 0;
+  flex: 1;
 }
 
-/* PROFILE ICON */
-
-
-.profile-icon {
+.header-right {
   display: flex;
-  justify-self: end;
-  font-size: 32px;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid #bfdbfe;
+  padding: 6px 12px;
+  border-radius: 20px;
   cursor: pointer;
-  padding: 6px;
-  transition: 0.2s;
-  width: 62px;
+  font-size: 14px;
+  color: #1e40af;
+  transition: all 0.2s;
 }
 
-.profile-icon:hover {
-  background-color: #243a4db3;
-  border-radius: 100px;
+.user-menu-btn:hover {
+  background-color: #dbeafe;
+  border-color: #2563eb;
 }
 
-/* SELL BUTTON DESKTOP */
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #2563eb;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+  margin-top: 8px;
+  min-width: 200px;
+  z-index: 1000;
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: #1e293b;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+  background-color: #f0f9ff;
+  color: #2563eb;
+}
+
+.logout-btn {
+  border-top: 1px solid #dbeafe;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+/* AUTH LINKS */
+.auth-links {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.link-btn {
+  color: #1e40af;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.link-btn:hover {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+/* SELL BUTTON */
 .sell-btn {
-  justify-self: start;
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.sell-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
   color: white;
   border: none;
-  padding: 10px 18px;
+  padding: 10px 20px;
   border-radius: 50px;
   font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
 .btn-primary:hover {
-  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* MOBILE SELL BUTTON */
@@ -63,31 +178,37 @@
 
 /* BREAKPOINT */
 @media (max-width: 768px) {
-
   .sell-btn {
     display: none;
   }
 
   .logo {
-    justify-self: start;
+    font-size: 20px;
   }
 
-  /* PROFILE FIXED RIGHT */
-  .profile-icon {
-    position: fixed;
-    right: 15px;
-    top: 14px;
-    z-index: 200;
-    font-size: 32px;
+  .auth-links {
+    flex-direction: column;
+    gap: 5px;
   }
 
-  /* NICE MOBILE SELL BUTTON */
   .sell-mobile {
     display: block;
-    width: 350px;
-    margin: 10px auto;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 50;
     padding: 12px 26px;
+    font-size: 16px;
     border-radius: 50px;
-    font-size: 18px;
   }
+
+  .header-wrap {
+    padding: 0 10px;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }

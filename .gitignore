@@ -32,3 +32,14 @@ dist-ssr
 *.sqlite3
 *.db
 *.sqlite
+
+media/
+
+
+CHECKLIST.md 
+COMMANDS.sh 
+DEBUG_GUIDE.md 
+FINAL_REPORT.md
+START_GUIDE.md
+TESTING_REPORT.md
+package-info.json

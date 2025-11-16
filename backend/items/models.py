@@ -27,13 +27,13 @@ class Item(models.Model):
         ('sold', 'Продан'),
         ('archived', 'Архивирован'),
     )
-
+    
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='items')
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='items')
-    image = models.CharField(max_length=500, blank=True, null=True)  
+    image = models.ImageField(upload_to='items/', blank=True, null=True)
     condition = models.CharField(max_length=10, choices=CONDITION_CHOICES)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
     created_at = models.DateTimeField(auto_now_add=True)

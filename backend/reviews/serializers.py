@@ -1,8 +1,15 @@
 from rest_framework import serializers
 from .models import Review
 from contacts.models import Contact
+from users.serializers import UserDetailSerializer
+from items.serializers import ItemSerializer
+
 
 class ReviewSerializer(serializers.ModelSerializer):
+    reviewer = UserDetailSerializer(read_only=True)
+    seller = UserDetailSerializer(read_only=True)
+    item = ItemSerializer(read_only=True)
+
     class Meta:
         model = Review
         fields = [
@@ -17,7 +24,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         contact = data['contact']
         user = self.context['request'].user
 
-        # Только покупатель может оставит оценку
+        # Только покупатель может оставить оценку
         if contact.buyer != user:
             raise serializers.ValidationError(
                 "Вы можете оставить отзыв только о продавце, с которым у вас был контакт."
@@ -42,3 +49,4 @@ class ReviewSerializer(serializers.ModelSerializer):
         validated_data['item'] = contact.item
 
         return super().create(validated_data)
+

@@ -38,7 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     building = models.CharField(max_length=50, blank=True)
     telegram = models.CharField(max_length=100, blank=True)
     phone = models.CharField(max_length=20, blank=True)
-    avatar_url = models.URLField(blank=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     rating = models.FloatField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
