@@ -12,5 +12,5 @@ urlpatterns = [
     path('api/', include('favorites.urls')),
     path('api/', include('contacts.urls')),
     path('api/', include('reviews.urls')),
-    # path('api/items/', include('items.urls')) позже
+    path('api/', include('notifications.urls')),
 ]
