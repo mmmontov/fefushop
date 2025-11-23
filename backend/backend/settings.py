@@ -1,5 +1,10 @@
 from datetime import timedelta
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+# Загрузи .env файл
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,12 +14,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*!s1i1cu9b_zz+@2t$u_fub8+i!iz9)rk$@jlt)5h8j_n!gh22'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-*!s1i1cu9b_zz+@2t$u_fub8+i!iz9)rk$@jlt)5h8j_n!gh22')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -69,11 +74,10 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:3000",
-]
+CORS_ALLOWED_ORIGINS = os.getenv(
+    'CORS_ALLOWED_ORIGINS',
+    'http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://frontend:3000'
+).split(',')
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -98,12 +102,21 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Поддержка PostgreSQL для Docker и SQLite для разработки
+if os.getenv('DATABASE_URL'):
+    # Docker окружение с PostgreSQL
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
     }
-}
+else:
+    # Разработка с SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_USER_MODEL = 'users.User'
 
