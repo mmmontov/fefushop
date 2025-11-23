@@ -126,7 +126,7 @@ export default function Register({ setUser }) {
                 name="faculty"
                 value={formData.faculty}
                 onChange={handleChange}
-                placeholder="ФИО"
+                placeholder="ИМКТ"
               />
             </div>
           </div>
@@ -140,7 +140,7 @@ export default function Register({ setUser }) {
                 name="building"
                 value={formData.building}
                 onChange={handleChange}
-                placeholder="1"
+                placeholder="8.1"
               />
             </div>
 
