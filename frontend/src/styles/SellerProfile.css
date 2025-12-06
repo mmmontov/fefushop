@@ -269,22 +269,87 @@
 }
 
 @media (max-width: 768px) {
+  .seller-profile-page {
+    padding: 15px;
+    box-sizing: border-box;
+  }
+
   .seller-header {
     grid-template-columns: 1fr;
     gap: 15px;
-  }
-
-  .seller-profile-page {
-    padding: 20px;
+    text-align: center;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
   }
 
   .seller-avatar-large {
     width: 100px;
     height: 100px;
     font-size: 40px;
+    margin: 0 auto;
   }
 
   .seller-info-box h1 {
-    font-size: 24px;
+    font-size: 22px;
+    word-wrap: break-word;
+  }
+
+  .seller-stats {
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  .seller-details {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+
+  .seller-details p {
+    font-size: 13px;
+    word-wrap: break-word;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+
+  .reviews-section {
+    margin-top: 30px;
+  }
+
+  .reviews-section h2 {
+    font-size: 18px;
+  }
+
+  .review-item {
+    padding: 12px;
+  }
+
+  .review-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .reviewer-name {
+    font-size: 13px;
+  }
+
+  .review-rating {
+    font-size: 13px;
+  }
+
+  .review-comment {
+    font-size: 13px;
+    word-wrap: break-word;
   }
 }

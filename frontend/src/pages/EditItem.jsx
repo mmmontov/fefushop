@@ -100,7 +100,12 @@ export default function EditItem() {
   return (
     <div className="create-item-container">
       <div className="create-item-box">
-        <h1>Редактировать объявление</h1>
+        <div className="page-header-with-back">
+          <button className="btn-back" onClick={() => navigate(-1)}>
+            ← Назад
+          </button>
+          <h1>Редактировать объявление</h1>
+        </div>
         
         {error && <div className="error-message">{error}</div>}
         

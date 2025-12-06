@@ -1,10 +1,32 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Header.css';
 
 export default function Header({ user, setUser }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
+  
+  // Определяем, находимся ли мы на главной странице
+  const isHomePage = location.pathname === '/';
+  
+  // Определяем, находимся ли мы на странице формы
+  const isFormPage = ['/create-item', '/edit-item'].some(path => 
+    location.pathname.startsWith(path)
+  );
+  
+  useEffect(() => {
+    // Добавляем класс на body для страниц форм
+    if (isFormPage) {
+      document.body.classList.add('form-page');
+    } else {
+      document.body.classList.remove('form-page');
+    }
+    
+    return () => {
+      document.body.classList.remove('form-page');
+    };
+  }, [isFormPage]);
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
@@ -30,9 +52,11 @@ export default function Header({ user, setUser }) {
             <h1 className="logo">FefuShop</h1>
           </Link>
 
-          <button className="btn-primary sell-btn" onClick={handleSellClick}>
-            + Продать
-          </button>
+          {isHomePage && (
+            <button className="btn-primary sell-btn" onClick={handleSellClick}>
+              + Продать
+            </button>
+          )}
 
           <div className="header-right">
             {user ? (
@@ -87,9 +111,11 @@ export default function Header({ user, setUser }) {
         </div>
       </header>
 
-      <button className="btn-primary sell-mobile" onClick={handleSellClick}>
-        + Продать
-      </button>
+      {isHomePage && (
+        <button className="btn-primary sell-mobile" onClick={handleSellClick}>
+          + Продать
+        </button>
+      )}
     </>
   );
 }

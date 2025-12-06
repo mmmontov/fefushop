@@ -24,11 +24,6 @@
   border-bottom: 2px solid #dbeafe;
 }
 
-.profile-avatar-section {
-  position: relative;
-  flex-shrink: 0;
-}
-
 .profile-avatar-large {
   width: 140px;
   height: 140px;
@@ -49,35 +44,6 @@
   object-fit: cover;
 }
 
-.avatar-placeholder {
-  font-size: 60px;
-}
-
-.avatar-upload-label {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.avatar-upload-btn {
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 50px;
-  font-size: 12px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
-  transition: all 0.2s;
-}
-
-.avatar-upload-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
-
 .profile-header-info {
   flex: 1;
 }
@@ -89,7 +55,16 @@
   font-weight: 700;
 }
 
-.profile-username-input {
+.editable-name {
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 6px;
+  margin: -5px -10px;
+}
+
+.edit-input-large {
   font-size: 32px;
   font-weight: 700;
   color: #1e40af;
@@ -98,6 +73,55 @@
   padding: 10px;
   width: 100%;
   margin-bottom: 15px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.edit-input-large:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.editable-name:hover {
+  background-color: #f0f9ff;
+  color: #2563eb;
+}
+
+.inline-edit-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.inline-name-input {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e40af;
+  border: 2px solid #2563eb;
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: white;
+  width: auto;
+  min-width: 200px;
+  font-family: inherit;
+}
+
+.inline-name-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.inline-name-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.saving-indicator {
+  font-size: 14px;
+  color: #64748b;
+  font-style: italic;
 }
 
 .profile-stats {
@@ -357,8 +381,14 @@
 }
 
 @media (max-width: 768px) {
+  .profile-page {
+    padding: 15px 10px;
+    gap: 20px;
+  }
+
   .profile-container {
-    padding: 20px;
+    padding: 20px 15px;
+    box-sizing: border-box;
   }
 
   .profile-header {
@@ -366,22 +396,109 @@
     align-items: center;
     text-align: center;
     gap: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+
+  .profile-avatar-large {
+    width: 120px;
+    height: 120px;
+    font-size: 50px;
+  }
+
+  .profile-header-info {
+    width: 100%;
   }
 
   .profile-header-info h1 {
-    font-size: 24px;
+    font-size: 22px;
+    word-wrap: break-word;
+  }
+
+  .inline-name-input {
+    font-size: 22px;
+    min-width: 150px;
+    max-width: 100%;
   }
 
   .profile-stats {
     justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 15px 0;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
+
+  .btn-edit-profile {
+    margin-top: 12px;
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+
+  .profile-content {
+    padding: 20px 15px;
   }
 
   .form-row {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
 
   .edit-actions {
     flex-direction: column;
+    gap: 10px;
+  }
+
+  .profile-info {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .info-group {
+    padding: 12px;
+  }
+
+  .info-group p {
+    font-size: 14px;
+    word-wrap: break-word;
+  }
+
+  .reviews-section {
+    padding: 20px 15px;
+  }
+
+  .reviews-section h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .review-item {
+    padding: 12px;
+  }
+
+  .review-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .reviewer-name {
+    font-size: 13px;
+  }
+
+  .review-rating {
+    font-size: 13px;
+  }
+
+  .review-comment {
+    font-size: 13px;
+    word-wrap: break-word;
   }
 }
 

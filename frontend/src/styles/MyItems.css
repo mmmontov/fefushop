@@ -168,12 +168,32 @@
 
 @media (max-width: 768px) {
   .my-items-page {
-    padding: 20px;
+    padding: 15px;
+    box-sizing: border-box;
+  }
+
+  .my-items-page h1 {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .filter-tabs {
+    gap: 5px;
+    margin-bottom: 15px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab {
+    padding: 10px 15px;
+    font-size: 13px;
+    white-space: nowrap;
   }
 
   .item-row {
     grid-template-columns: 60px 1fr;
-    gap: 15px;
+    gap: 12px;
+    padding: 12px;
   }
 
   .item-image {
@@ -181,13 +201,32 @@
     height: 60px;
   }
 
+  .item-info h3 {
+    font-size: 14px;
+    word-wrap: break-word;
+  }
+
+  .item-info h3 a {
+    word-break: break-word;
+  }
+
+  .item-meta {
+    font-size: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
   .item-actions {
     grid-column: 1 / -1;
-    flex-direction: column;
+    flex-direction: row;
+    gap: 8px;
+    margin-top: 10px;
   }
 
   .btn-edit,
   .btn-delete {
-    width: 100%;
+    flex: 1;
+    padding: 10px;
+    font-size: 12px;
   }
 }

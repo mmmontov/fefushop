@@ -122,18 +122,40 @@
 
 @media (max-width: 768px) {
   .product-card {
-    padding: 12px;
+    padding: 10px;
+    min-height: auto;
   }
 
   .product-title {
-    font-size: 13px;
+    font-size: 12px;
+    min-height: 36px;
+    margin: 8px 0 4px 0;
   }
 
   .price {
     font-size: 14px;
+    margin: 4px 0;
   }
 
   .img-wrap {
     height: 120px;
+    max-height: 120px;
+  }
+
+  .img-wrap img {
+    max-height: 120px;
+  }
+
+  .heart {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .seller-info {
+    font-size: 11px;
+    padding-top: 8px;
   }
 }

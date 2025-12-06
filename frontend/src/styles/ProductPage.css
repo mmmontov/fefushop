@@ -295,10 +295,23 @@
 @media (max-width: 768px) {
   .product-page {
     padding: 15px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+  }
+
+  .product-container {
+    gap: 20px;
   }
 
   .product-info h1 {
-    font-size: 22px;
+    font-size: 20px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .price-section {
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .price {
@@ -306,11 +319,58 @@
   }
 
   .product-image {
-    min-height: 300px;
+    min-height: 250px;
+    padding: 15px;
   }
 
   .product-image img {
-    max-height: 300px;
+    max-height: 250px;
+    max-width: 100%;
+  }
+
+  .seller-card {
+    padding: 15px;
+    margin-top: 20px;
+  }
+
+  .seller-header {
+    gap: 10px;
+  }
+
+  .seller-avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .seller-info h3 {
+    font-size: 14px;
+  }
+
+  .seller-actions {
+    gap: 8px;
+  }
+
+  .seller-actions button {
+    padding: 10px 15px;
+    font-size: 13px;
+  }
+
+  .contact-visible {
+    padding: 12px;
+  }
+
+  .contact-visible p {
+    font-size: 13px;
+    word-wrap: break-word;
+  }
+
+  .reviews-section {
+    margin-top: 30px;
+    padding-top: 20px;
+  }
+
+  .reviews-section h2 {
+    font-size: 18px;
   }
 }
 

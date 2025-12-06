@@ -6,6 +6,9 @@ import '../styles/Profile.css';
 export default function Profile({ user, setUser }) {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editingName, setEditingName] = useState('');
+  const [savingName, setSavingName] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [sellerReviews, setSellerReviews] = useState([]);
@@ -69,6 +72,48 @@ export default function Profile({ user, setUser }) {
     }
   };
 
+  const handleNameClick = () => {
+    if (!isEditing) {
+      setIsEditingName(true);
+      setEditingName(user.username);
+    }
+  };
+
+  const handleNameSave = async () => {
+    if (!editingName.trim() || editingName === user.username) {
+      setIsEditingName(false);
+      return;
+    }
+
+    setSavingName(true);
+    try {
+      const data = new FormData();
+      data.append('username', editingName.trim());
+      
+      const response = await authAPI.updateProfile(data);
+      setUser(response.data);
+      setIsEditingName(false);
+    } catch (err) {
+      console.error('Error saving name:', err);
+      alert('Ошибка при сохранении имени');
+    } finally {
+      setSavingName(false);
+    }
+  };
+
+  const handleNameCancel = () => {
+    setIsEditingName(false);
+    setEditingName('');
+  };
+
+  const handleNameKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleNameSave();
+    } else if (e.key === 'Escape') {
+      handleNameCancel();
+    }
+  };
+
   const handleSave = async () => {
     setError('');
     setLoading(true);
@@ -129,8 +174,28 @@ export default function Profile({ user, setUser }) {
                 onChange={handleChange}
                 className="edit-input-large"
               />
+            ) : isEditingName ? (
+              <div className="inline-edit-name">
+                <input
+                  type="text"
+                  value={editingName}
+                  onChange={(e) => setEditingName(e.target.value)}
+                  onBlur={handleNameSave}
+                  onKeyDown={handleNameKeyDown}
+                  className="inline-name-input"
+                  autoFocus
+                  disabled={savingName}
+                />
+                {savingName && <span className="saving-indicator">Сохранение...</span>}
+              </div>
             ) : (
-              <h1>{user.username}</h1>
+              <h1 
+                className="editable-name"
+                onClick={handleNameClick}
+                title="Нажмите, чтобы изменить имя"
+              >
+                {user.username}
+              </h1>
             )}
             
             <div className="profile-stats">
