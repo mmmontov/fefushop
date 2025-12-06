@@ -8,7 +8,7 @@ export default function MyItems() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState('active');
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     loadUserItems();
@@ -17,7 +17,7 @@ export default function MyItems() {
   const loadUserItems = async () => {
     try {
       setLoading(true);
-      const response = await itemsAPI.getMyItems(filter);
+      const response = await itemsAPI.getMyItems(filter === 'all' ? null : filter);
       const userItems = response.data.results ? response.data.results : Array.isArray(response.data) ? response.data : [];
       setItems(userItems);
     } catch (err) {
@@ -26,6 +26,24 @@ export default function MyItems() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getStatusLabel = (status) => {
+    const labels = {
+      'active': 'Активен',
+      'sold': 'Продан',
+      'archived': 'Архивирован'
+    };
+    return labels[status] || status;
+  };
+
+  const getStatusClass = (status) => {
+    const classes = {
+      'active': 'status-active',
+      'sold': 'status-sold',
+      'archived': 'status-archived'
+    };
+    return classes[status] || '';
   };
 
   const handleDelete = async (itemId) => {
@@ -49,13 +67,13 @@ export default function MyItems() {
       <h1>Мои товары</h1>
       
       <div className="filter-tabs">
-        {['active', 'sold', 'archived'].map(status => (
+        {['all', 'active', 'sold', 'archived'].map(status => (
           <button
             key={status}
             className={`tab ${filter === status ? 'active' : ''}`}
             onClick={() => setFilter(status)}
           >
-            {status === 'active' ? 'Активные' : status === 'sold' ? 'Проданные' : 'Архивированные'}
+            {status === 'all' ? 'Все' : status === 'active' ? 'Активные' : status === 'sold' ? 'Проданные' : 'Архивированные'}
           </button>
         ))}
       </div>
@@ -84,6 +102,9 @@ export default function MyItems() {
                   <p className="item-meta">
                     <span>{item.price} ₽</span>
                     <span>{item.condition === 'new' ? 'Новый' : 'Б/У'}</span>
+                    <span className={`item-status ${getStatusClass(item.status)}`}>
+                      {getStatusLabel(item.status)}
+                    </span>
                   </p>
                 </div>
                 <div className="item-actions">

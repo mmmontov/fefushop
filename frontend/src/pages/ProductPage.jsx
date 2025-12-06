@@ -20,6 +20,7 @@ export default function ProductPage({ user }) {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
   const [hasReview, setHasReview] = useState(false);
+  const [changingStatus, setChangingStatus] = useState(false);
 
   useEffect(() => {
     fetchItem();
@@ -125,7 +126,9 @@ export default function ProductPage({ user }) {
         <div className="product-image">
           <img src={imageUrl} alt={item.title} />
           {item.status !== 'active' && (
-            <div className="status-overlay">{item.status === 'sold' ? 'Продано' : 'Архивировано'}</div>
+            <div className={`status-overlay ${item.status === 'sold' ? 'status-overlay-sold' : 'status-overlay-archived'}`}>
+              {item.status === 'sold' ? 'Продан' : 'Неактуален'}
+            </div>
           )}
         </div>
 
@@ -135,6 +138,12 @@ export default function ProductPage({ user }) {
           <div className="price-section">
             <p className="price">{item.price} ₽</p>
             <span className="condition">{item.condition === 'new' ? 'Новый' : 'Б/У'}</span>
+            {item.status === 'sold' && (
+              <span className="status-badge-page status-sold-page">Продан</span>
+            )}
+            {item.status === 'archived' && (
+              <span className="status-badge-page status-archived-page">Неактуален</span>
+            )}
           </div>
 
           <div className="product-details">
@@ -161,28 +170,82 @@ export default function ProductPage({ user }) {
               </div>
             </Link>
 
+            {item.seller.id === user?.id && (
+              <div className="seller-status-control">
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '14px' }}>
+                  Статус товара:
+                </label>
+                <select
+                  value={item.status}
+                  onChange={async (e) => {
+                    const newStatus = e.target.value;
+                    if (changingStatus) return;
+                    setChangingStatus(true);
+                    try {
+                      const response = await itemsAPI.updateItem(id, { status: newStatus });
+                      setItem(response.data);
+                      
+                    } catch (err) {
+                      console.error('Error updating status:', err);
+                      
+                    } finally {
+                      setChangingStatus(false);
+                    }
+                  }}
+                  disabled={changingStatus}
+                  style={{
+                    padding: '10px',
+                    borderRadius: '6px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: changingStatus ? 'not-allowed' : 'pointer',
+                    backgroundColor: changingStatus ? '#f5f5f5' : 'white',
+                    width: '100%',
+                    maxWidth: '300px'
+                  }}
+                >
+                  <option value="active">Активен</option>
+                  <option value="sold">Продан</option>
+                  <option value="archived">Архивирован</option>
+                </select>
+                {changingStatus && <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>Обновление...</p>}
+              </div>
+            )}
+
             {item.seller.id !== user?.id && (
               <div className="seller-actions">
-                {seller.phone || seller.telegram ? (
-                  <div className="contact-visible">
-                    {seller.phone && <p><strong>📱 Телефон:</strong> {seller.phone}</p>}
-                    {seller.telegram && <p><strong>💬 Telegram:</strong> {seller.telegram}</p>}
-                    {!hasReview && contact && (
-                      <button 
-                        className="btn-primary" 
-                        onClick={() => setShowReviewModal(true)}
-                        style={{ marginTop: '10px' }}
-                      >
-                        Оставить отзыв
-                      </button>
-                    )}
-                  </div>
-                ) : contactRequested ? (
-                  <button className="btn-disabled" disabled>Запрос отправлен</button>
+                {item.status === 'active' ? (
+                  seller.phone || seller.telegram ? (
+                    <div className="contact-visible">
+                      {seller.phone && <p><strong>📱 Телефон:</strong> {seller.phone}</p>}
+                      {seller.telegram && <p><strong>💬 Telegram:</strong> {seller.telegram}</p>}
+                      {!hasReview && contact && (
+                        <button 
+                          className="btn-primary" 
+                          onClick={() => setShowReviewModal(true)}
+                          style={{ marginTop: '10px' }}
+                        >
+                          Оставить отзыв
+                        </button>
+                      )}
+                    </div>
+                  ) : contactRequested ? (
+                    <button className="btn-disabled" disabled>Запрос отправлен</button>
+                  ) : (
+                    <button className="btn-primary" onClick={handleRequestContact}>
+                      Запросить контакты
+                    </button>
+                  )
                 ) : (
-                  <button className="btn-primary" onClick={handleRequestContact}>
-                    Запросить контакты
-                  </button>
+                  <div className="contact-visible">
+                    <p style={{ color: '#dc2626', fontWeight: '600' }}>
+                      {item.status === 'sold' ? '⚠️ Этот товар уже продан' : '⚠️ Этот товар неактуален'}
+                    </p>
+                    <p style={{ fontSize: '13px', color: '#666', marginTop: '5px' }}>
+                      Контакты недоступны
+                    </p>
+                  </div>
                 )}
                 {showContactModal && (
                   <div className="modal-overlay" onClick={() => setShowContactModal(false)}>

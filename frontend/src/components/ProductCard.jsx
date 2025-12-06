@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { favoritesAPI } from '../services/api';
 import '../styles/ProductCard.css';
 
-export default function ProductCard({ id, title, price, image, condition, seller }) {
+export default function ProductCard({ id, title, price, image, condition, seller, status }) {
   const [liked, setLiked] = useState(false);
   const [favoriteId, setFavoriteId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,11 +62,22 @@ export default function ProductCard({ id, title, price, image, condition, seller
         : `http://localhost:8000${image}`)
     : 'https://via.placeholder.com/200x200?text=No+Image';
 
+  const getStatusBadge = () => {
+    if (status === 'sold') {
+      return <span className="status-badge status-sold">Продан</span>;
+    }
+    if (status === 'archived') {
+      return <span className="status-badge status-archived">Неактуален</span>;
+    }
+    return null;
+  };
+
   return (
     <Link to={`/product/${id}`} className="product-card">
       <div className="img-wrap">
         <img src={imageUrl} alt={title} />
         {condition && <span className="condition-badge">{condition === 'new' ? 'Новый' : 'Б/У'}</span>}
+        {getStatusBadge()}
       </div>
 
       <button

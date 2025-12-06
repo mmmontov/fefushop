@@ -20,12 +20,46 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class ItemViewSet(viewsets.ModelViewSet):
-    queryset = Item.objects.all().filter(status='active').order_by('-created_at')
     serializer_class = ItemSerializer
     permission_classes = [IsOwnerOrReadOnly]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'description', 'category__name']
     ordering_fields = ['price', 'created_at']
+
+    def get_queryset(self):
+        """
+        Логика отображения товаров:
+        - active: видят все
+        - sold/archived: видят только если товар в избранном у пользователя
+        - продавец всегда видит свои товары
+        """
+        user = self.request.user
+        
+        # Если пользователь авторизован
+        if user.is_authenticated:
+            # Получаем ID товаров в избранном пользователя
+            from favorites.models import Favorite
+            favorite_item_ids = Favorite.objects.filter(user=user).values_list('item_id', flat=True)
+            
+            # Товары продавца всегда видны ему
+            seller_items = Item.objects.filter(seller=user)
+            
+            # Активные товары видны всем
+            active_items = Item.objects.filter(status='active')
+            
+            # Проданные/архивированные видны только если в избранном
+            non_active_in_favorites = Item.objects.filter(
+                status__in=['sold', 'archived'],
+                id__in=favorite_item_ids
+            )
+            
+            # Объединяем все видимые товары
+            queryset = (seller_items | active_items | non_active_in_favorites).distinct()
+        else:
+            # Неавторизованные видят только активные
+            queryset = Item.objects.filter(status='active')
+        
+        return queryset.order_by('-created_at')
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -46,15 +80,18 @@ class ItemViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def my_items(self, request):
-        """Получить товары текущего пользователя"""
-        status = request.query_params.get('status', 'active')
-        items = Item.objects.filter(seller=request.user, status=status).order_by('-created_at')
+        """Получить все товары текущего пользователя (вне зависимости от статуса)"""
+        status = request.query_params.get('status', None)
+        if status:
+            items = Item.objects.filter(seller=request.user, status=status).order_by('-created_at')
+        else:
+            items = Item.objects.filter(seller=request.user).order_by('-created_at')
         serializer = self.get_serializer(items, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
     def seller_items(self, request):
-        """Получить товары продавца по его ID"""
+        """Получить товары продавца по его ID (только активные)"""
         seller_id = request.query_params.get('seller_id')
         if not seller_id:
             return Response({'detail': 'seller_id parameter is required'}, status=400)

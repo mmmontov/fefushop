@@ -52,6 +52,7 @@ export default function Favorites() {
                 image={favorite.item.image}
                 condition={favorite.item.condition}
                 seller={favorite.item.seller}
+                status={favorite.item.status}
               />
 
             </div>

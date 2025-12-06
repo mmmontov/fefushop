@@ -33,11 +33,20 @@
   position: absolute;
   top: 20px;
   right: 20px;
-  background: rgba(0,0,0,0.7);
   color: white;
   padding: 10px 15px;
   border-radius: 4px;
   font-weight: bold;
+  font-size: 14px;
+  z-index: 10;
+}
+
+.status-overlay-sold {
+  background: rgba(220, 38, 38, 0.9);
+}
+
+.status-overlay-archived {
+  background: rgba(107, 114, 128, 0.9);
 }
 
 .product-info h1 {
@@ -68,6 +77,30 @@
   font-size: 14px;
   color: #666;
   font-weight: 500;
+}
+
+.status-badge-page {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.status-sold-page {
+  background: #dc2626;
+}
+
+.status-archived-page {
+  background: #6b7280;
+}
+
+.seller-status-control {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
 }
 
 .product-details {

@@ -186,6 +186,7 @@ export default function SellerProfile() {
                 image={item.image}
                 condition={item.condition}
                 seller={item.seller}
+                status={item.status}
               />
             ))}
           </div>
@@ -296,7 +297,6 @@ export default function SellerProfile() {
                 className="btn-primary" 
                 onClick={async () => {
                   if (reviewRating === 0) {
-                    alert('Пожалуйста, выберите оценку');
                     return;
                   }
                   try {
@@ -317,10 +317,8 @@ export default function SellerProfile() {
                     // Обновляем данные продавца
                     const sellerResponse = await authAPI.getUserById(id);
                     setSeller(sellerResponse.data);
-                    alert('Отзыв успешно добавлен!');
                   } catch (err) {
                     console.error('Error creating review:', err);
-                    alert(err.response?.data?.detail || 'Ошибка при создании отзыва');
                   }
                 }}
               >

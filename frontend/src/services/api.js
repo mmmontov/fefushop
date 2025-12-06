@@ -72,7 +72,10 @@ export const authAPI = {
 export const itemsAPI = {
   getItems: (params) => api.get('/items/items/', { params }),
   getItemById: (id) => api.get(`/items/items/${id}/`),
-  getMyItems: (status = 'active') => api.get('/items/items/my_items/', { params: { status } }),
+  getMyItems: (status = null) => {
+    const params = status ? { status } : {};
+    return api.get('/items/items/my_items/', { params });
+  },
   getSellerItems: (sellerId) => api.get('/items/items/seller_items/', { params: { seller_id: sellerId } }),
   createItem: (data) => api.post('/items/items/', data, {
     headers: { 'Content-Type': 'multipart/form-data' }

@@ -110,6 +110,26 @@
   gap: 5px;
 }
 
+.item-status {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+.status-active {
+  background: #10b981;
+}
+
+.status-sold {
+  background: #dc2626;
+}
+
+.status-archived {
+  background: #6b7280;
+}
+
 .item-actions {
   display: flex;
   gap: 10px;

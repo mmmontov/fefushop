@@ -179,15 +179,16 @@ export default function Home() {
           <>
             <div className="products-grid">
               {filteredItems.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  id={item.id}
-                  title={item.title}
-                  price={item.price}
-                  image={item.image}
-                  condition={item.condition}
-                  seller={item.seller}
-                />
+            <ProductCard
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              price={item.price}
+              image={item.image}
+              condition={item.condition}
+              seller={item.seller}
+              status={item.status}
+            />
               ))}
             </div>
 
