@@ -12,7 +12,9 @@ services:
     environment:
       DEBUG: "True"
       ALLOWED_HOSTS: localhost,127.0.0.1,backend
-      SECRET_KEY: django-insecure-*!s1i1cu9b_zz+@2t$u_fub8+i!iz9)rk$@jlt)5h8j_n!gh22
+      # SECRET_KEY must be set via environment variable or .env file
+      # For development, generate one using:
+      # python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
     volumes:
       - ./backend:/app
       - backend_media:/app/media

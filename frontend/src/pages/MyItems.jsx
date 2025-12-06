@@ -85,7 +85,7 @@ export default function MyItems() {
         <div className="items-table">
           {items.map(item => {
             // Если image уже полный URL, используем его, иначе добавляем префикс
-            const imageUrl = item.image 
+            const imageUrl = item.image && typeof item.image === 'string' && item.image.trim() !== ''
               ? (item.image.startsWith('http://') || item.image.startsWith('https://') 
                   ? item.image 
                   : `http://localhost:8000${item.image}`)

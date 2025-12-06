@@ -56,7 +56,7 @@ export default function ProductCard({ id, title, price, image, condition, seller
   };
 
   // Если image уже полный URL, используем его, иначе добавляем префикс
-  const imageUrl = image 
+  const imageUrl = image && typeof image === 'string' && image.trim() !== ''
     ? (image.startsWith('http://') || image.startsWith('https://') 
         ? image 
         : `http://localhost:8000${image}`)

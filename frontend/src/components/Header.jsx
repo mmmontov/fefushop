@@ -66,7 +66,7 @@ export default function Header({ user, setUser }) {
                   onClick={() => setShowMenu(!showMenu)}
                 >
                   <img 
-                    src={user.avatar 
+                    src={user.avatar && typeof user.avatar === 'string' && user.avatar.trim() !== ''
                       ? (user.avatar.startsWith('http://') || user.avatar.startsWith('https://')
                           ? user.avatar
                           : `http://localhost:8000${user.avatar}`)

@@ -145,11 +145,11 @@ export default function Profile({ user, setUser }) {
   };
 
   // Если avatar уже полный URL, используем его, иначе добавляем префикс
-  const avatarUrl = formData.avatar && typeof formData.avatar === 'string' 
+  const avatarUrl = formData.avatar && typeof formData.avatar === 'string' && formData.avatar.trim() !== ''
     ? (formData.avatar.startsWith('http://') || formData.avatar.startsWith('https://')
         ? formData.avatar
         : `http://localhost:8000${formData.avatar}`)
-    : formData.avatar 
+    : formData.avatar && typeof formData.avatar === 'object'
     ? URL.createObjectURL(formData.avatar)
     : '👤';
 

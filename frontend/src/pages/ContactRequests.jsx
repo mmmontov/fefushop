@@ -84,7 +84,7 @@ export default function ContactRequests({ user }) {
         <div className="requests-list">
           {filteredRequests.map(req => {
             // Если image уже полный URL, используем его, иначе добавляем префикс
-            const imageUrl = req.item.image 
+            const imageUrl = req.item.image && typeof req.item.image === 'string' && req.item.image.trim() !== ''
               ? (req.item.image.startsWith('http://') || req.item.image.startsWith('https://') 
                   ? req.item.image 
                   : `http://localhost:8000${req.item.image}`)

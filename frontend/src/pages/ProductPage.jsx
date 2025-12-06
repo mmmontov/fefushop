@@ -114,7 +114,7 @@ export default function ProductPage({ user }) {
   if (!item) return <div className="error-message">Товар не найден</div>;
 
   // Если image уже полный URL, используем его, иначе добавляем префикс
-  const imageUrl = item.image 
+  const imageUrl = item.image && typeof item.image === 'string' && item.image.trim() !== ''
     ? (item.image.startsWith('http://') || item.image.startsWith('https://') 
         ? item.image 
         : `http://localhost:8000${item.image}`)
@@ -155,7 +155,7 @@ export default function ProductPage({ user }) {
           {/* Seller Card */}
           <div className="seller-card">
             <Link to={`/profile/${seller.id}`} className="seller-header">
-              {seller.avatar && (
+              {seller.avatar && typeof seller.avatar === 'string' && seller.avatar.trim() !== '' && (
                 <img 
                   src={seller.avatar.startsWith('http://') || seller.avatar.startsWith('https://') 
                     ? seller.avatar 

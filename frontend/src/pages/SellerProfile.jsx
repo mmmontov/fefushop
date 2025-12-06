@@ -113,7 +113,7 @@ export default function SellerProfile() {
   if (!seller) return <div className="error-message">Продавец не найден</div>;
 
   // Если avatar уже полный URL, используем его, иначе добавляем префикс
-  const avatarUrl = seller.avatar 
+  const avatarUrl = seller.avatar && typeof seller.avatar === 'string' && seller.avatar.trim() !== ''
     ? (seller.avatar.startsWith('http://') || seller.avatar.startsWith('https://')
         ? seller.avatar
         : `http://localhost:8000${seller.avatar}`)
