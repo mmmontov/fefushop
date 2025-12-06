@@ -15,8 +15,9 @@ export default function CreateItem() {
     price: '',
     category_id: '',
     condition: 'new',
-    image: null,
+    images: [],
   });
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   useEffect(() => {
     loadCategories();
@@ -51,17 +52,63 @@ export default function CreateItem() {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const files = Array.from(e.target.files);
+    
+    // Валидация: максимум 4 изображения
+    if (files.length > 4) {
+      setFieldErrors(prev => ({
+        ...prev,
+        images: 'Можно загрузить максимум 4 изображения'
+      }));
+      return;
+    }
+    
+    // Валидация: минимум 1 изображение
+    if (files.length === 0) {
+      setFieldErrors(prev => ({
+        ...prev,
+        images: 'Необходимо загрузить хотя бы одно изображение'
+      }));
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
-      image: file
+      images: files
     }));
     
+    // Создаем превью для отображения
+    const previews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(previews);
+    
     // Очистка ошибки для изображения
-    if (fieldErrors.image) {
+    if (fieldErrors.images) {
       setFieldErrors(prev => {
         const newErrors = { ...prev };
-        delete newErrors.image;
+        delete newErrors.images;
+        return newErrors;
+      });
+    }
+  };
+
+  const removeImage = (index) => {
+    const newImages = formData.images.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    
+    // Освобождаем память от старых превью
+    URL.revokeObjectURL(imagePreviews[index]);
+    
+    setFormData(prev => ({
+      ...prev,
+      images: newImages
+    }));
+    setImagePreviews(newPreviews);
+    
+    // Очистка ошибки если изображения есть
+    if (newImages.length > 0 && fieldErrors.images) {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.images;
         return newErrors;
       });
     }
@@ -83,8 +130,11 @@ export default function CreateItem() {
     if (!formData.category_id) {
       errors.category_id = 'Категория обязательна';
     }
-    if (!formData.image) {
-      errors.image = 'Фотография товара обязательна';
+    if (formData.images.length === 0) {
+      errors.images = 'Необходимо загрузить хотя бы одно изображение';
+    }
+    if (formData.images.length > 4) {
+      errors.images = 'Можно загрузить максимум 4 изображения';
     }
     
     setFieldErrors(errors);
@@ -110,9 +160,11 @@ export default function CreateItem() {
       data.append('price', formData.price);
       data.append('category_id', formData.category_id);
       data.append('condition', formData.condition);
-      if (formData.image) {
-        data.append('image', formData.image);
-      }
+      
+      // Добавляем все изображения
+      formData.images.forEach((image) => {
+        data.append('images', image);
+      });
 
       const response = await itemsAPI.createItem(data);
       navigate(`/product/${response.data.id}`);
@@ -222,18 +274,58 @@ export default function CreateItem() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="image">Фото товара</label>
+            <label htmlFor="images">Фото товара (от 1 до 4)</label>
             <input
-              id="image"
+              id="images"
               type="file"
-              name="image"
+              name="images"
               onChange={handleImageChange}
               accept="image/*"
-              className={fieldErrors.image ? 'error' : ''}
-              style={fieldErrors.image ? { borderColor: '#dc2626' } : {}}
+              multiple
+              className={fieldErrors.images ? 'error' : ''}
+              style={fieldErrors.images ? { borderColor: '#dc2626' } : {}}
             />
-            {fieldErrors.image && <span className="field-error">{fieldErrors.image}</span>}
-            {formData.image && !fieldErrors.image && <p style={{ fontSize: '14px', color: '#2563eb', marginTop: '8px' }}>✓ Выбран файл: {formData.image.name}</p>}
+            {fieldErrors.images && <span className="field-error">{fieldErrors.images}</span>}
+            {formData.images.length > 0 && (
+              <div style={{ marginTop: '15px' }}>
+                <p style={{ fontSize: '14px', color: '#2563eb', marginBottom: '10px' }}>
+                  ✓ Выбрано изображений: {formData.images.length} / 4
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '10px', marginTop: '10px' }}>
+                  {imagePreviews.map((preview, index) => (
+                    <div key={index} style={{ position: 'relative', border: '1px solid #bfdbfe', borderRadius: '4px', overflow: 'hidden' }}>
+                      <img 
+                        src={preview} 
+                        alt={`Preview ${index + 1}`} 
+                        style={{ width: '100%', height: '100px', objectFit: 'cover', display: 'block' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        style={{
+                          position: 'absolute',
+                          top: '5px',
+                          right: '5px',
+                          background: 'rgba(220, 38, 38, 0.9)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '50%',
+                          width: '24px',
+                          height: '24px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading}>

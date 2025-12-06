@@ -21,6 +21,7 @@ export default function ProductPage({ user }) {
   const [reviewComment, setReviewComment] = useState('');
   const [hasReview, setHasReview] = useState(false);
   const [changingStatus, setChangingStatus] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     fetchItem();
@@ -113,21 +114,73 @@ export default function ProductPage({ user }) {
   if (error) return <div className="error-message">{error}</div>;
   if (!item) return <div className="error-message">Товар не найден</div>;
 
-  // Если image уже полный URL, используем его, иначе добавляем префикс
-  const imageUrl = item.image && typeof item.image === 'string' && item.image.trim() !== ''
-    ? (item.image.startsWith('http://') || item.image.startsWith('https://') 
-        ? item.image 
-        : `http://localhost:8000${item.image}`)
-    : 'https://via.placeholder.com/400x400?text=No+Image';
+  // Получаем все изображения товара
+  const getImages = () => {
+    if (item.images && item.images.length > 0) {
+      return item.images.map(img => {
+        const imageUrl = img.image && typeof img.image === 'string' && img.image.trim() !== ''
+          ? (img.image.startsWith('http://') || img.image.startsWith('https://')
+              ? img.image
+              : `http://localhost:8000${img.image}`)
+          : null;
+        return imageUrl;
+      }).filter(Boolean);
+    }
+    // Обратная совместимость: если есть старое поле image
+    if (item.image && typeof item.image === 'string' && item.image.trim() !== '') {
+      const imageUrl = item.image.startsWith('http://') || item.image.startsWith('https://')
+        ? item.image
+        : `http://localhost:8000${item.image}`;
+      return [imageUrl];
+    }
+    return ['https://via.placeholder.com/400x400?text=No+Image'];
+  };
+
+  const images = getImages();
+  const currentImage = images[selectedImageIndex] || images[0] || 'https://via.placeholder.com/400x400?text=No+Image';
 
   return (
     <div className="product-page">
       <div className="product-container">
-        <div className="product-image">
-          <img src={imageUrl} alt={item.title} />
-          {item.status !== 'active' && (
-            <div className={`status-overlay ${item.status === 'sold' ? 'status-overlay-sold' : 'status-overlay-archived'}`}>
-              {item.status === 'sold' ? 'Продан' : 'Неактуален'}
+        <div className="product-image-gallery">
+          <div className="product-image-main">
+            <img src={currentImage} alt={item.title} />
+            {item.status !== 'active' && (
+              <div className={`status-overlay ${item.status === 'sold' ? 'status-overlay-sold' : 'status-overlay-archived'}`}>
+                {item.status === 'sold' ? 'Продан' : 'Неактуален'}
+              </div>
+            )}
+            {images.length > 1 && (
+              <>
+                <button 
+                  className="gallery-nav gallery-nav-prev"
+                  onClick={() => setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
+                  aria-label="Предыдущее изображение"
+                >
+                  ‹
+                </button>
+                <button 
+                  className="gallery-nav gallery-nav-next"
+                  onClick={() => setSelectedImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
+                  aria-label="Следующее изображение"
+                >
+                  ›
+                </button>
+              </>
+            )}
+          </div>
+          {images.length > 1 && (
+            <div className="product-image-thumbnails">
+              {images.map((img, index) => (
+                <button
+                  key={index}
+                  className={`thumbnail ${selectedImageIndex === index ? 'active' : ''}`}
+                  onClick={() => setSelectedImageIndex(index)}
+                  aria-label={`Изображение ${index + 1}`}
+                >
+                  <img src={img} alt={`${item.title} - ${index + 1}`} />
+                </button>
+              ))}
             </div>
           )}
         </div>

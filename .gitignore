@@ -28,6 +28,8 @@ dist-ssr
 *.sln
 *.sw?
 
+.env
+
 # databases
 *.sqlite3
 *.db

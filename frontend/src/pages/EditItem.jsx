@@ -16,8 +16,11 @@ export default function EditItem() {
     price: '',
     category_id: '',
     condition: 'new',
-    image: null,
+    images: [],
   });
+  const [existingImages, setExistingImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   useEffect(() => {
     loadItem();
@@ -28,14 +31,24 @@ export default function EditItem() {
     try {
       setLoading(true);
       const response = await itemsAPI.getItemById(id);
+      const item = response.data;
+      
       setFormData({
-        title: response.data.title,
-        description: response.data.description,
-        price: response.data.price,
-        category_id: response.data.category?.id || '',
-        condition: response.data.condition,
-        image: response.data.image,
+        title: item.title,
+        description: item.description,
+        price: item.price,
+        category_id: item.category?.id || '',
+        condition: item.condition,
+        images: [],
       });
+      
+      // Загружаем существующие изображения
+      if (item.images && item.images.length > 0) {
+        setExistingImages(item.images);
+      } else if (item.image) {
+        // Обратная совместимость: если есть старое поле image
+        setExistingImages([{ image: item.image, id: 'old' }]);
+      }
     } catch (err) {
       setError('Ошибка при загрузке товара');
       console.error(err);
@@ -63,10 +76,35 @@ export default function EditItem() {
   };
 
   const handleImageChange = (e) => {
-    setFormData(prev => ({
-      ...prev,
-      image: e.target.files[0]
-    }));
+    const files = Array.from(e.target.files);
+    
+    // Валидация: максимум 4 изображения (существующие + новые)
+    const totalImages = existingImages.length + files.length;
+    if (totalImages > 4) {
+      setError('Можно загрузить максимум 4 изображения');
+      return;
+    }
+    
+    setNewImages(files);
+    
+    // Создаем превью для новых изображений
+    const previews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(previews);
+  };
+
+  const removeExistingImage = (imageId) => {
+    setExistingImages(prev => prev.filter(img => img.id !== imageId));
+  };
+
+  const removeNewImage = (index) => {
+    const newFiles = newImages.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    
+    // Освобождаем память от старых превью
+    URL.revokeObjectURL(imagePreviews[index]);
+    
+    setNewImages(newFiles);
+    setImagePreviews(newPreviews);
   };
 
   const handleSubmit = async (e) => {
@@ -81,8 +119,20 @@ export default function EditItem() {
       data.append('price', formData.price);
       data.append('category_id', formData.category_id);
       data.append('condition', formData.condition);
-      if (formData.image && typeof formData.image !== 'string') {
-        data.append('image', formData.image);
+      
+      // Валидация: минимум 1 изображение должно остаться
+      const totalImages = existingImages.length + newImages.length;
+      if (totalImages === 0) {
+        setError('Необходимо оставить хотя бы одно изображение');
+        setSaving(false);
+        return;
+      }
+      
+      // Если есть новые изображения, заменяем все старые
+      if (newImages.length > 0) {
+        newImages.forEach((image) => {
+          data.append('images', image);
+        });
       }
 
       await itemsAPI.updateItem(id, data);
@@ -191,20 +241,114 @@ export default function EditItem() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="image">Фото товара</label>
+            <label htmlFor="images">Фото товара (от 1 до 4)</label>
             <input
-              id="image"
+              id="images"
               type="file"
-              name="image"
+              name="images"
               onChange={handleImageChange}
               accept="image/*"
+              multiple
             />
-            {formData.image && (
-              <p className="file-name">
-                {typeof formData.image === 'string' 
-                  ? `Текущее фото: ${formData.image}` 
-                  : `Выбран файл: ${formData.image.name}`
-                }
+            
+            {/* Существующие изображения */}
+            {existingImages.length > 0 && (
+              <div style={{ marginTop: '15px' }}>
+                <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>
+                  Текущие изображения ({existingImages.length}):
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '10px', marginTop: '10px' }}>
+                  {existingImages.map((img) => {
+                    const imageUrl = img.image && typeof img.image === 'string' && img.image.trim() !== ''
+                      ? (img.image.startsWith('http://') || img.image.startsWith('https://')
+                          ? img.image
+                          : `http://localhost:8000${img.image}`)
+                      : 'https://via.placeholder.com/100x100?text=No+Image';
+                    
+                    return (
+                      <div key={img.id} style={{ position: 'relative', border: '1px solid #bfdbfe', borderRadius: '4px', overflow: 'hidden' }}>
+                        <img 
+                          src={imageUrl} 
+                          alt="Existing" 
+                          style={{ width: '100%', height: '100px', objectFit: 'cover', display: 'block' }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeExistingImage(img.id)}
+                          style={{
+                            position: 'absolute',
+                            top: '5px',
+                            right: '5px',
+                            background: 'rgba(220, 38, 38, 0.9)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '24px',
+                            height: '24px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            
+            {/* Новые изображения */}
+            {newImages.length > 0 && (
+              <div style={{ marginTop: '15px' }}>
+                <p style={{ fontSize: '14px', color: '#2563eb', marginBottom: '10px' }}>
+                  Новые изображения ({newImages.length}):
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '10px', marginTop: '10px' }}>
+                  {imagePreviews.map((preview, index) => (
+                    <div key={index} style={{ position: 'relative', border: '1px solid #bfdbfe', borderRadius: '4px', overflow: 'hidden' }}>
+                      <img 
+                        src={preview} 
+                        alt={`Preview ${index + 1}`} 
+                        style={{ width: '100%', height: '100px', objectFit: 'cover', display: 'block' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeNewImage(index)}
+                        style={{
+                          position: 'absolute',
+                          top: '5px',
+                          right: '5px',
+                          background: 'rgba(220, 38, 38, 0.9)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '50%',
+                          width: '24px',
+                          height: '24px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
+                  Всего изображений: {existingImages.length + newImages.length} / 4
+                </p>
+              </div>
+            )}
+            
+            {existingImages.length === 0 && newImages.length === 0 && (
+              <p style={{ fontSize: '14px', color: '#dc2626', marginTop: '8px' }}>
+                ⚠️ Необходимо загрузить хотя бы одно изображение
               </p>
             )}
           </div>
