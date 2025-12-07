@@ -1,6 +1,8 @@
 from django.db import models
+from django.utils import timezone
 from django.utils.text import slugify
 from django.conf import settings
+from datetime import timedelta
 from users.models import User
 
 class Category(models.Model):
@@ -45,6 +47,27 @@ class Item(models.Model):
         """Обратная совместимость: возвращаем первое изображение"""
         first_image = self.images.first()
         return first_image.image if first_image else None
+    
+    def check_and_archive_if_old(self):
+        """Проверяет, прошло ли 30 дней с момента создания, и архивирует объявление если нужно"""
+        if self.status == 'active':
+            thirty_days_ago = timezone.now() - timedelta(days=30)
+            if self.created_at < thirty_days_ago:
+                self.status = 'archived'
+                self.save(update_fields=['status'])
+                return True
+        return False
+    
+    @classmethod
+    def archive_old_items(cls):
+        """Архивирует все объявления старше 30 дней"""
+        thirty_days_ago = timezone.now() - timedelta(days=30)
+        old_items = cls.objects.filter(
+            status='active',
+            created_at__lt=thirty_days_ago
+        )
+        count = old_items.update(status='archived')
+        return count
 
 
 class ItemImage(models.Model):

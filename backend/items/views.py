@@ -33,6 +33,9 @@ class ItemViewSet(viewsets.ModelViewSet):
         - sold/archived: видят только если товар в избранном у пользователя
         - продавец всегда видит свои товары
         """
+        # Автоматически архивируем старые объявления перед получением списка
+        Item.archive_old_items()
+        
         user = self.request.user
         
         # Если пользователь авторизован
@@ -65,6 +68,12 @@ class ItemViewSet(viewsets.ModelViewSet):
         if self.action == 'retrieve':
             return ItemDetailSerializer
         return ItemSerializer
+    
+    def retrieve(self, request, *args, **kwargs):
+        """При получении детальной информации об объявлении проверяем и архивируем если нужно"""
+        instance = self.get_object()
+        instance.check_and_archive_if_old()
+        return super().retrieve(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         serializer.save(seller=self.request.user)
@@ -92,6 +101,9 @@ class ItemViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
     def seller_items(self, request):
         """Получить товары продавца по его ID (только активные)"""
+        # Автоматически архивируем старые объявления перед получением списка
+        Item.archive_old_items()
+        
         seller_id = request.query_params.get('seller_id')
         if not seller_id:
             return Response({'detail': 'seller_id parameter is required'}, status=400)
